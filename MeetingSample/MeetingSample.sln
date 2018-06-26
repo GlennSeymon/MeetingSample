@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeetingSample", "MeetingSample\MeetingSample.csproj", "{D7BC133E-77A5-46A4-973A-C3B45AD28FEF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeetingSample.UI", "MeetingSample\MeetingSample.UI.csproj", "{D7BC133E-77A5-46A4-973A-C3B45AD28FEF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeetingSample.WebAPI", "MeetingSample.WebAPI\MeetingSample.WebAPI.csproj", "{BCDB88C9-435C-4E97-A533-5A873DD6CBC2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeetingSample.WebAPI", "MeetingSample.WebAPI\MeetingSample.WebAPI.csproj", "{BCDB88C9-435C-4E97-A533-5A873DD6CBC2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
