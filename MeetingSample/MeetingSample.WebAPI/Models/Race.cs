@@ -9,9 +9,10 @@ namespace MeetingSample.WebAPI.Models
     public class Race
     {
         [Key]
-        public int RaceCode { get; set; }
-        public int RaceNumber { get; set; }
-        public string NameRaceFull { get; set; }
-        public int DistanceRace { get; set; }
-    }
+		public int RaceCode { get; set; }
+		public int MeetCode { get; set; }
+		public int RaceNumber { get; set; }
+		public string Name { get; set; }
+		public int Distance { get; set; }
+	}
 }
