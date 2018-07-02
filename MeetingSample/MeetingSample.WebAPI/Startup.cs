@@ -45,12 +45,12 @@ namespace MeetingSample.WebAPI
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetRequiredService<MeetingSampleWebAPIContext>();
-                context.Database.EnsureDeleted();
-                //context.SaveChanges();
+                //context.Database.EnsureDeleted();
+                ////context.SaveChanges();
 
-                context.Database.Migrate(); // This must be called before EnsureCreated.
-                //context.Database.EnsureCreated();
-                //context.SaveChanges();
+                //context.Database.Migrate(); // This must be called before EnsureCreated.
+                ////context.Database.EnsureCreated();
+                ////context.SaveChanges();
             }
 
             

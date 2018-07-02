@@ -12,6 +12,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="2.1.1" />
+    <PackageReference Include="Microsoft.TypeScript.Compiler" Version="2.9.2" />
     <PackageReference Include="Node.js" Version="5.3.0" />
   </ItemGroup>
 
@@ -22,12 +23,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="ClientApp\src\components\AddState.tsx" />
+    <None Remove="ClientApp\src\components\AddState.js" />
     <None Remove="ClientApp\src\components\FetchState.js" />
   </ItemGroup>
 
   <ItemGroup>
-    <TypeScriptCompile Include="ClientApp\src\components\AddState.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\AddState.js" />
     <TypeScriptCompile Include="ClientApp\src\components\FetchState.js" />
   </ItemGroup>
 

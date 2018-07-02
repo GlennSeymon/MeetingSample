@@ -2,8 +2,14 @@
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 
+export class StateData {
+    stateCode: number = 0;
+    descShort: string = "";
+    descLong: string = "";
+}    
+
 interface FetchStateDataState {
-    //stateList: StateData[];
+    stateList: StateData[];
     loading: boolean;
 }
 
@@ -12,7 +18,6 @@ export class FetchState extends Component<RouteComponentProps<{}>, FetchStateDat
         super(props);
         this.state = { stateList: [], loading: true };
 
-        //fetch('api/State/Index')
         fetch('api/States')
             //.then(response => response.json() as Promise<StateData[]>)
             .then(response => response.json())
@@ -21,8 +26,57 @@ export class FetchState extends Component<RouteComponentProps<{}>, FetchStateDat
             });
 
         // This binding is necessary to make "this" work in the callback  
-        //this.handleDelete = this.handleDelete.bind(this);
-        //this.handleEdit = this.handleEdit.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
+        this.handleEdit = this.handleEdit.bind(this);
+    }
+
+    // Handle Delete request for an state  
+    handleDelete(id: number) {
+        if (!window.confirm("Do you want to delete state with Id: " + id))
+            return;
+        else {
+            fetch('api/States/' + id, {
+                method: 'delete'
+            }).then(data => {
+                this.setState(
+                    {
+                        stateList: this.state.stateList.filter((rec) => {
+                            return rec.stateId !== id;
+                        })
+                    });
+            });
+        }
+    }
+
+	handleEdit(id: number) {
+		this.props.history.push("/state/edit/" + id);
+    }
+
+    // Returns the HTML table to the render() method.  
+    renderStateTable(stateList: StateData[]) {
+        return <table className='table'>
+            <thead>
+                <tr>
+                    <th>State Code</th>
+                    <th>Desc Short</th>
+                    <th>Desc Long</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {stateList.map(state =>
+                    <tr key={state.stateCode}>
+                        <td>{state.stateCode}</td>
+                        <td>{state.descShort}</td>
+                        <td>{state.descLong}</td>
+                        <td>
+                            <a className="action" onClick={(id) => this.handleEdit(state.stateCode)}>Edit</a>  |
+                            <a className="action" onClick={(id) => this.handleDelete(state.stateCode)}>Delete</a>
+                        </td>
+                    </tr>
+                )}
+            </tbody>
+        </table>;
     }
 
     render() {
@@ -39,60 +93,5 @@ export class FetchState extends Component<RouteComponentProps<{}>, FetchStateDat
             {contents}
         </div>;
     }
-/*
-    // Handle Delete request for an state  
-    handleDelete(id: number) {
-        if (!confirm("Do you want to delete state with Id: " + id))
-            return;
-        else {
-            fetch('api/State/Delete/' + id, {
-                method: 'delete'
-            }).then(data => {
-                this.setState(
-                    {
-                        stateList: this.state.stateList.filter((rec) => {
-                            return (rec.stateId != id);
-                        })
-                    });
-            });
-        }
-    }
-
-    handleEdit(id: number) {
-        this.props.history.push("/state/edit/" + id);
-    }
-*/
-    // Returns the HTML table to the render() method.  
-    renderStateTable(stateList: StateData[]) {
-        return <table className='table'>
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>State Code</th>
-                    <th>Desc Short</th>
-                    <th>Desc Long</th>
-                </tr>
-            </thead>
-            <tbody>
-                {stateList.map(state =>
-                    <tr key={state.stateId}>
-                        <td></td>
-                        <td>{state.stateCode}</td>
-                        <td>{state.descShort}</td>
-                        <td>{state.descLong}</td>
-                        <td>
-                            <a className="action" onClick={(id) => this.handleEdit(state.stateId)}>Edit</a>  |
-                            <a className="action" onClick={(id) => this.handleDelete(state.stateId)}>Delete</a>
-                        </td>
-                    </tr>
-                )}
-            </tbody>
-        </table>;
-    }
 }
-
-export class StateData {
-    stateCode: number = 0;
-    descShort: string = "";
-    descLong: string = "";
-}    
+FetchState.displayName = 'FetchState';
