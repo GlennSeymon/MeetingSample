@@ -55,10 +55,9 @@ namespace MeetingSample.WebAPI.Controllers
 
             if (id != state.StateCode)
             {
-                return BadRequest();
+				return BadRequest();
             }
-
-            _context.Entry(state).State = EntityState.Modified;
+			_context.Entry(state).State = EntityState.Modified;
 
             try
             {

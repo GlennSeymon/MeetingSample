@@ -1,39 +1,41 @@
 ﻿import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router';
-import { Link } from 'react-router-dom';
-import { StateData } from './FetchState'; 
 
 interface AddStateDataState {
     title: string;
     loading: boolean;
-    stateData: StateData;
-} 
+	stateCode: number;
+	descShort: string;
+	descLong: string;
+}
+
+var stateCodeParam = 0;
 
 export class AddState extends Component<RouteComponentProps<{}>, AddStateDataState> {
     constructor(props) {
-        super(props);
-		this.state = { title: "", loading: true, stateData: new StateData };
+		super(props);
 
-		var stateCode = this.props.match.params["stateCode"]; 
+		stateCodeParam = this.props.match.params.statecode; 
 
-		// This will set state for Edit employee  
-		if (stateCode > 0) {
-			fetch('api/State/' + stateCode)
-				//.then(response => response.json() as Promise<StateData>)
-				.then(response => response.json())
-				.then(data => {
-					this.setState({ title: "Edit", loading: false, stateData: data });
-				});
+		const stateInitial = {
+			title: "", loading: true, stateCode: stateCodeParam, descShort: "", descLong: ""
 		}
 
-		// This will set state for Add employee  
-		else {
-			this.state = { title: "Create", loading: false, cityList: [], stateData: new StateData };
-		}  
+		this.state = stateInitial;
 
-        // This binding is necessary to make "this" work in the callback  
+		if (stateCodeParam > 0) {
+			fetch('api/States/' + stateCodeParam)
+				.then(response => response.json())
+				.then(data => {
+					this.setState({ title: "Edit", loading: false, stateCode: data.statecode, descShort: data.descShort, descLong: data.descLong });
+				});
+		}
+		else
+			this.state = { title: "Create", loading: false, stateCode: 0, descShort: "", descLong: "" };
+
         this.handleSave = this.handleSave.bind(this);
-        this.handleCancel = this.handleCancel.bind(this);
+		this.handleCancel = this.handleCancel.bind(this);
+		this.handleChange = this.handleChange.bind(this);
     }
 
     render() {
@@ -47,31 +49,43 @@ export class AddState extends Component<RouteComponentProps<{}>, AddStateDataSta
             <hr />
             {contents}
         </div>;
-    }
+	}
 
-    // This will handle the submit form event.  
-    handleSave(event) {
-        event.preventDefault();
-        const data = new FormData(event.target);
+	handleChange(event) {
+		const target = event.target;
+		const value = target.type === 'checkbox' ? target.checked : target.value;
+		const name = target.name;
 
-        // PUT request for Edit state.  
-        if (this.state.stateData.stateCode) {
-            fetch('api/State/', {
-                method: 'PUT',
-                body: data,
+		this.setState({
+			[name]: value
+		});
+	}
 
-            }).then((response) => response.json())
-                .then((responseJson) => {
+	handleSave(event) {
+		event.preventDefault();
+
+		const data = {
+			"stateCode": stateCodeParam,
+			"descShort": this.state.descShort,
+			"descLong": this.state.descLong
+		}
+
+		if (stateCodeParam) {
+			fetch('api/States/' + stateCodeParam, {
+				method: 'PUT',
+				body: data
+            }).then((responseJson) => {
                     this.props.history.push("/fetchstate");
                 })
         }
-
-        // POST request for Add state.  
         else {
-            fetch('api/State/', {
-                method: 'POST',
-                body: data,
-
+            fetch('api/States/', {
+				method: 'POST',
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(data)
             }).then((response) => response.json())
                 .then((responseJson) => {
                     this.props.history.push("/fetchstate");
@@ -79,29 +93,27 @@ export class AddState extends Component<RouteComponentProps<{}>, AddStateDataSta
         }
     }
 
-    // This will handle Cancel button click event.  
     handleCancel(e) {
         e.preventDefault();
         this.props.history.push("/fetchstate");
     }
 
-    // Returns the HTML Form to the render() method.  
     renderCreateForm() {
         return (
             <form onSubmit={this.handleSave} >
                 <div className="form-group row" >
-                    <input type="hidden" name="stateCode" value={this.state.stateData.stateCode} />
+					<input type="hidden" name="stateCode" value={stateCodeParam} />
                 </div>
                 <div className="form-group row" >
-                    <label className=" control-label col-md-12" htmlFor="DescShort">Desc Short</label>
+                    <label className=" control-label col-md-12" htmlFor="descShort">Desc Short</label>
                     <div className="col-md-4">
-                        <input className="form-control" type="text" name="DescShort" defaultValue={this.state.stateData.descShort} required />
+						<input className="form-control" type="text" name="descShort" defaultValue={this.state.descShort} onChange={this.handleChange} required />
                     </div>
                 </div >
                 <div className="form-group row" >
-                    <label className=" control-label col-md-12" htmlFor="DescLong">Desc Long</label>
+                    <label className=" control-label col-md-12" htmlFor="descLong">Desc Long</label>
                     <div className="col-md-4">
-                        <input className="form-control" type="text" name="DescLong" defaultValue={this.state.stateData.descLong} required />
+						<input className="form-control" type="text" name="descLong" defaultValue={this.state.descLong} onChange={this.handleChange} required />
                     </div>
                 </div >
                 <div className="form-group">

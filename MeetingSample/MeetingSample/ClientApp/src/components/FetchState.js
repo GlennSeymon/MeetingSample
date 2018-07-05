@@ -19,29 +19,27 @@ export class FetchState extends Component<RouteComponentProps<{}>, FetchStateDat
         this.state = { stateList: [], loading: true };
 
         fetch('api/States')
-            //.then(response => response.json() as Promise<StateData[]>)
             .then(response => response.json())
             .then(data => {
                 this.setState({ stateList: data, loading: false });
             });
 
-        // This binding is necessary to make "this" work in the callback  
         this.handleDelete = this.handleDelete.bind(this);
         this.handleEdit = this.handleEdit.bind(this);
     }
 
     // Handle Delete request for an state  
     handleDelete(id: number) {
-        if (!window.confirm("Do you want to delete state with Id: " + id))
+        if (!window.confirm("Do you want to delete state with code: " + id))
             return;
-        else {
+		else {
             fetch('api/States/' + id, {
                 method: 'delete'
             }).then(data => {
                 this.setState(
-                    {
+					{
                         stateList: this.state.stateList.filter((rec) => {
-                            return rec.stateId !== id;
+                            return rec.stateCode !== id;
                         })
                     });
             });
@@ -85,8 +83,7 @@ export class FetchState extends Component<RouteComponentProps<{}>, FetchStateDat
             : this.renderStateTable(this.state.stateList);
 
         return <div>
-            <h1>State Data</h1>
-            <p>This component demonstrates fetching State data from the server.</p>
+            <h1>State List</h1>
             <p>
                 <Link to="/addstate">Create New</Link>
             </p>
