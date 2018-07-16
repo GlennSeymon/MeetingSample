@@ -1,4 +1,7 @@
-﻿using MeetingSample.WebAPI.Models;
+﻿using AutoMapper;
+using MeetingSample.WebAPI.Interface;
+using MeetingSample.WebAPI.Models;
+using MeetingSample.WebAPI.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -11,41 +14,45 @@ namespace MeetingSample.WebAPI.Controllers
     [ApiController]
     public class MeetingsController : ControllerBase
     {
-        private readonly MeetingSampleWebAPIContext _context;
+        private readonly MeetingSampleWebAPIContext context;
+		private readonly IMeetingService meetingService;
+		private readonly IMapper mapper;
 
-        public MeetingsController(MeetingSampleWebAPIContext context)
+        public MeetingsController(MeetingSampleWebAPIContext context, IMeetingService meetingService, IMapper mapper)
         {
-            _context = context;
+            this.context = context;
+			this.meetingService = meetingService;
+			this.mapper = mapper;
         }
 
         // GET: api/Meetings
         [HttpGet]
-        public IEnumerable<Meeting> GetMeetings()
+        public async Task<IEnumerable<MeetingVM>> GetMeetings()
         {
-            return _context.Meetings;
-        }
+			return await this.meetingService.Get(this.mapper);
+		}
 
-        // GET: api/Meetings/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetMeeting([FromRoute] int id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+		// GET: api/Meetings/1
+		[HttpGet("{id}")]
+		public async Task<IActionResult> GetMeeting([FromRoute] int id)
+		{
+			if (!ModelState.IsValid)
+			{
+				return BadRequest(ModelState);
+			}
 
-            var meeting = await _context.Meetings.FindAsync(id);
+			var meeting = await this.meetingService.Get(this.mapper, id);
 
-            if (meeting == null)
-            {
-                return NotFound();
-            }
+			if (meeting == null)
+			{
+				return NotFound();
+			}
 
-            return Ok(meeting);
-        }
+			return Ok(meeting);
+		}
 
-        // PUT: api/Meetings/5
-        [HttpPut("{id}")]
+		// PUT: api/Meetings/5
+		[HttpPut("{id}")]
         public async Task<IActionResult> PutMeeting([FromRoute] int id, [FromBody] Meeting meeting)
         {
             if (!ModelState.IsValid)
@@ -58,11 +65,11 @@ namespace MeetingSample.WebAPI.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(meeting).State = EntityState.Modified;
+            this.context.Entry(meeting).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await this.context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -88,8 +95,8 @@ namespace MeetingSample.WebAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            _context.Meetings.Add(meeting);
-            await _context.SaveChangesAsync();
+            this.context.Meetings.Add(meeting);
+            await this.context.SaveChangesAsync();
 
             return CreatedAtAction("GetMeeting", new { id = meeting.MeetCode }, meeting);
         }
@@ -103,21 +110,21 @@ namespace MeetingSample.WebAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            var meeting = await _context.Meetings.FindAsync(id);
+            var meeting = await this.context.Meetings.FindAsync(id);
             if (meeting == null)
             {
                 return NotFound();
             }
 
-            _context.Meetings.Remove(meeting);
-            await _context.SaveChangesAsync();
+            this.context.Meetings.Remove(meeting);
+            await this.context.SaveChangesAsync();
 
             return Ok(meeting);
         }
 
         private bool MeetingExists(int id)
         {
-            return _context.Meetings.Any(e => e.MeetCode == id);
+            return this.context.Meetings.Any(e => e.MeetCode == id);
         }
     }
 }

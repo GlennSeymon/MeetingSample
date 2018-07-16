@@ -62,7 +62,7 @@ namespace MeetingSample.WebAPI.Migrations
                     MeetCode = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Title = table.Column<string>(nullable: true),
-                    StateDesc = table.Column<string>(nullable: true),
+                    StateCode = table.Column<int>(nullable: true),
                     MeetDate = table.Column<DateTime>(nullable: false),
                     VenueCode = table.Column<int>(nullable: true),
                     MeetingCategoryCode = table.Column<int>(nullable: true)
@@ -75,6 +75,12 @@ namespace MeetingSample.WebAPI.Migrations
                         column: x => x.MeetingCategoryCode,
                         principalTable: "MeetingCategories",
                         principalColumn: "MeetingCategoryCode",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Meetings_States_StateCode",
+                        column: x => x.StateCode,
+                        principalTable: "States",
+                        principalColumn: "StateCode",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Meetings_Venues_VenueCode",
@@ -118,30 +124,16 @@ namespace MeetingSample.WebAPI.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Races",
-                columns: new[] { "RaceCode", "Distance", "MeetingMeetCode", "Name", "RaceNumber" },
-                values: new object[,]
-                {
-                    { 7, 1000, null, "Meeting 2, Race 4", 4 },
-                    { 6, 1300, null, "Meeting 2, Race 3", 3 },
-                    { 4, 1000, null, "Meeting 2, Race 1", 1 },
-                    { 5, 1200, null, "Meeting 2, Race 2", 2 },
-                    { 2, 1200, null, "Meeting 1, Race 2", 2 },
-                    { 1, 1000, null, "Meeting 1, Race 1", 1 },
-                    { 3, 1300, null, "Meeting 1, Race 3", 3 }
-                });
-
-            migrationBuilder.InsertData(
                 table: "States",
                 columns: new[] { "StateCode", "DescLong", "DescShort" },
                 values: new object[,]
                 {
-                    { 6, "Victoria", "VIC" },
                     { 1, "New South Wales", "NSW" },
                     { 2, "Northern Territory", "NT" },
                     { 3, "Queensland", "QLD" },
                     { 4, "South Australia", "SA" },
                     { 5, "Tasmania", "TAS" },
+                    { 6, "Victoria", "VIC" },
                     { 7, "Western Australia", "WA" }
                 });
 
@@ -605,20 +597,39 @@ namespace MeetingSample.WebAPI.Migrations
 
             migrationBuilder.InsertData(
                 table: "Meetings",
-                columns: new[] { "MeetCode", "MeetDate", "MeetingCategoryCode", "StateDesc", "Title", "VenueCode" },
+                columns: new[] { "MeetCode", "MeetDate", "MeetingCategoryCode", "StateCode", "Title", "VenueCode" },
                 values: new object[,]
                 {
-                    { 2, new DateTime(2018, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, null, "Meeting 2", 76 },
-                    { 4, new DateTime(2018, 1, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, null, "Meeting 4", 76 },
-                    { 1, new DateTime(2018, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, null, "Meeting 1", 141 },
-                    { 3, new DateTime(2018, 1, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, null, "Meeting 3", 141 },
-                    { 5, new DateTime(2018, 1, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, null, "Meeting 5", 141 }
+                    { 2, new DateTime(2018, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, 6, "Meeting 2", 76 },
+                    { 4, new DateTime(2018, 1, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, 6, "Meeting 4", 76 },
+                    { 1, new DateTime(2018, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, 6, "Meeting 1", 141 },
+                    { 3, new DateTime(2018, 1, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, 6, "Meeting 3", 141 },
+                    { 5, new DateTime(2018, 1, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, 6, "Meeting 5", 141 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Races",
+                columns: new[] { "RaceCode", "Distance", "MeetingMeetCode", "Name", "RaceNumber" },
+                values: new object[,]
+                {
+                    { 4, 1000, 2, "Meeting 2, Race 1", 1 },
+                    { 5, 1200, 2, "Meeting 2, Race 2", 2 },
+                    { 6, 1300, 2, "Meeting 2, Race 3", 3 },
+                    { 7, 1000, 2, "Meeting 2, Race 4", 4 },
+                    { 1, 1000, 1, "Meeting 1, Race 1", 1 },
+                    { 2, 1200, 1, "Meeting 1, Race 2", 2 },
+                    { 3, 1300, 1, "Meeting 1, Race 3", 3 }
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Meetings_MeetingCategoryCode",
                 table: "Meetings",
                 column: "MeetingCategoryCode");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Meetings_StateCode",
+                table: "Meetings",
+                column: "StateCode");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Meetings_VenueCode",

@@ -12,7 +12,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "api/Meetings",
+      "launchUrl": "api/Meetings/1",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -20,7 +20,7 @@
     "MeetingSample.WebAPI": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/Meetings",
+      "launchUrl": "api/Meetings/1",
       "applicationUrl": "https://localhost:44399;http://localhost:65486",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

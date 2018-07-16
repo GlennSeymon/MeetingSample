@@ -1,30 +1,28 @@
-﻿using System;
+﻿using MeetingSample.WebAPI.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MeetingSample.WebAPI.Models;
 
 namespace MeetingSample.WebAPI.Controllers
 {
-    [Route("api/[controller]")]
+	[Route("api/[controller]")]
     [ApiController]
     public class RacesController : ControllerBase
     {
-        private readonly MeetingSampleWebAPIContext _context;
+        private readonly MeetingSampleWebAPIContext context;
 
         public RacesController(MeetingSampleWebAPIContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         // GET: api/Races
         [HttpGet]
         public IEnumerable<Race> GetRaces()
         {
-            return _context.Races;
+            return this.context.Races;
         }
 
         // GET: api/Races/5
@@ -36,7 +34,7 @@ namespace MeetingSample.WebAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            var race = await _context.Races.FindAsync(id);
+            var race = await this.context.Races.FindAsync(id);
 
             if (race == null)
             {
@@ -60,11 +58,11 @@ namespace MeetingSample.WebAPI.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(race).State = EntityState.Modified;
+            this.context.Entry(race).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await this.context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -90,8 +88,8 @@ namespace MeetingSample.WebAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            _context.Races.Add(race);
-            await _context.SaveChangesAsync();
+            this.context.Races.Add(race);
+            await this.context.SaveChangesAsync();
 
             return CreatedAtAction("GetRace", new { id = race.RaceCode }, race);
         }
@@ -105,21 +103,21 @@ namespace MeetingSample.WebAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            var race = await _context.Races.FindAsync(id);
+            var race = await this.context.Races.FindAsync(id);
             if (race == null)
             {
                 return NotFound();
             }
 
-            _context.Races.Remove(race);
-            await _context.SaveChangesAsync();
+            this.context.Races.Remove(race);
+            await this.context.SaveChangesAsync();
 
             return Ok(race);
         }
 
         private bool RaceExists(int id)
         {
-            return _context.Races.Any(e => e.RaceCode == id);
+            return this.context.Races.Any(e => e.RaceCode == id);
         }
     }
 }

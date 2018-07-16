@@ -29,7 +29,7 @@ namespace MeetingSample.WebAPI.Migrations
 
                     b.Property<int?>("MeetingCategoryCode");
 
-                    b.Property<string>("StateDesc");
+                    b.Property<int?>("StateCode");
 
                     b.Property<string>("Title");
 
@@ -39,16 +39,18 @@ namespace MeetingSample.WebAPI.Migrations
 
                     b.HasIndex("MeetingCategoryCode");
 
+                    b.HasIndex("StateCode");
+
                     b.HasIndex("VenueCode");
 
                     b.ToTable("Meetings");
 
                     b.HasData(
-                        new { MeetCode = 1, MeetDate = new DateTime(2018, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), MeetingCategoryCode = 1, Title = "Meeting 1", VenueCode = 141 },
-                        new { MeetCode = 2, MeetDate = new DateTime(2018, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), MeetingCategoryCode = 1, Title = "Meeting 2", VenueCode = 76 },
-                        new { MeetCode = 3, MeetDate = new DateTime(2018, 1, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), MeetingCategoryCode = 1, Title = "Meeting 3", VenueCode = 141 },
-                        new { MeetCode = 4, MeetDate = new DateTime(2018, 1, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), MeetingCategoryCode = 1, Title = "Meeting 4", VenueCode = 76 },
-                        new { MeetCode = 5, MeetDate = new DateTime(2018, 1, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), MeetingCategoryCode = 1, Title = "Meeting 5", VenueCode = 141 }
+                        new { MeetCode = 1, MeetDate = new DateTime(2018, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), MeetingCategoryCode = 1, StateCode = 6, Title = "Meeting 1", VenueCode = 141 },
+                        new { MeetCode = 2, MeetDate = new DateTime(2018, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), MeetingCategoryCode = 1, StateCode = 6, Title = "Meeting 2", VenueCode = 76 },
+                        new { MeetCode = 3, MeetDate = new DateTime(2018, 1, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), MeetingCategoryCode = 1, StateCode = 6, Title = "Meeting 3", VenueCode = 141 },
+                        new { MeetCode = 4, MeetDate = new DateTime(2018, 1, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), MeetingCategoryCode = 1, StateCode = 6, Title = "Meeting 4", VenueCode = 76 },
+                        new { MeetCode = 5, MeetDate = new DateTime(2018, 1, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), MeetingCategoryCode = 1, StateCode = 6, Title = "Meeting 5", VenueCode = 141 }
                     );
                 });
 
@@ -93,13 +95,13 @@ namespace MeetingSample.WebAPI.Migrations
                     b.ToTable("Races");
 
                     b.HasData(
-                        new { RaceCode = 1, Distance = 1000, Name = "Meeting 1, Race 1", RaceNumber = 1 },
-                        new { RaceCode = 2, Distance = 1200, Name = "Meeting 1, Race 2", RaceNumber = 2 },
-                        new { RaceCode = 3, Distance = 1300, Name = "Meeting 1, Race 3", RaceNumber = 3 },
-                        new { RaceCode = 4, Distance = 1000, Name = "Meeting 2, Race 1", RaceNumber = 1 },
-                        new { RaceCode = 5, Distance = 1200, Name = "Meeting 2, Race 2", RaceNumber = 2 },
-                        new { RaceCode = 6, Distance = 1300, Name = "Meeting 2, Race 3", RaceNumber = 3 },
-                        new { RaceCode = 7, Distance = 1000, Name = "Meeting 2, Race 4", RaceNumber = 4 }
+                        new { RaceCode = 1, Distance = 1000, MeetingMeetCode = 1, Name = "Meeting 1, Race 1", RaceNumber = 1 },
+                        new { RaceCode = 2, Distance = 1200, MeetingMeetCode = 1, Name = "Meeting 1, Race 2", RaceNumber = 2 },
+                        new { RaceCode = 3, Distance = 1300, MeetingMeetCode = 1, Name = "Meeting 1, Race 3", RaceNumber = 3 },
+                        new { RaceCode = 4, Distance = 1000, MeetingMeetCode = 2, Name = "Meeting 2, Race 1", RaceNumber = 1 },
+                        new { RaceCode = 5, Distance = 1200, MeetingMeetCode = 2, Name = "Meeting 2, Race 2", RaceNumber = 2 },
+                        new { RaceCode = 6, Distance = 1300, MeetingMeetCode = 2, Name = "Meeting 2, Race 3", RaceNumber = 3 },
+                        new { RaceCode = 7, Distance = 1000, MeetingMeetCode = 2, Name = "Meeting 2, Race 4", RaceNumber = 4 }
                     );
                 });
 
@@ -604,6 +606,10 @@ namespace MeetingSample.WebAPI.Migrations
                     b.HasOne("MeetingSample.WebAPI.Models.MeetingCategory", "MeetingCategory")
                         .WithMany("Meetings")
                         .HasForeignKey("MeetingCategoryCode");
+
+                    b.HasOne("MeetingSample.WebAPI.Models.State", "State")
+                        .WithMany()
+                        .HasForeignKey("StateCode");
 
                     b.HasOne("MeetingSample.WebAPI.Models.Venue", "Venue")
                         .WithMany("Meetings")

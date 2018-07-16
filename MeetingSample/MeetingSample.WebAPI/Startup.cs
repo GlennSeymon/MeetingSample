@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using MeetingSample.WebAPI.Interface;
 using MeetingSample.WebAPI.Models;
 using MeetingSample.WebAPI.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace MeetingSample.WebAPI
 {
-    public class Startup
+	public class Startup
     {
         public Startup(IConfiguration configuration)
         {
@@ -29,9 +23,10 @@ namespace MeetingSample.WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<IMeetingService, MeetingService>();
+			services.AddTransient<IMeetingService, MeetingService>();
             services.AddDbContext<MeetingSampleWebAPIContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+			services.AddAutoMapper();
+			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 		}
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,12 +44,11 @@ namespace MeetingSample.WebAPI
                 ////context.SaveChanges();
 
                 //context.Database.Migrate(); // This must be called before EnsureCreated.
-                ////context.Database.EnsureCreated();
+                //context.Database.EnsureCreated();
                 ////context.SaveChanges();
             }
 
-            
-            app.UseHttpsRedirection();
+			app.UseHttpsRedirection();
             app.UseMvc();
         }
     }

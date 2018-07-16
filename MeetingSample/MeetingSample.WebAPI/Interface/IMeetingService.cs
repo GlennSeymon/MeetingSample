@@ -1,13 +1,14 @@
-﻿using MeetingSample.WebAPI.Models;
-using System;
+﻿using AutoMapper;
+using MeetingSample.WebAPI.Models.ViewModels;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace MeetingSample.WebAPI.Interface
 {
-    public interface IMeetingService
+	public interface IMeetingService
     {
-        Meeting Get(int meetCode);
-    }
+		Task<MeetingVM> Get(IMapper mapper, int meetCode);
+		Task<IEnumerable<MeetingVM>> Get(IMapper mapper);
+	}
 }
+

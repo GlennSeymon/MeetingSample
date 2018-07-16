@@ -18,7 +18,7 @@ namespace MeetingSample.WebAPI.Models
         public DbSet<Meeting> Meetings { get; set; }
 		public DbSet<Race> Races { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Lookup tables.
             modelBuilder.Entity<MeetingCategory>().HasData(
@@ -501,13 +501,13 @@ namespace MeetingSample.WebAPI.Models
             );
 
             modelBuilder.Entity<Race>().HasData(
-                new { RaceCode = 1, MeetCode = 1, RaceNumber = 1, Name = "Meeting 1, Race 1", Distance = 1000 },
-                new { RaceCode = 2, MeetCode = 1, RaceNumber = 2, Name = "Meeting 1, Race 2", Distance = 1200 },
-                new { RaceCode = 3, MeetCode = 1, RaceNumber = 3, Name = "Meeting 1, Race 3", Distance = 1300 },
-                new { RaceCode = 4, MeetCode = 2, RaceNumber = 1, Name = "Meeting 2, Race 1", Distance = 1000 },
-                new { RaceCode = 5, MeetCode = 2, RaceNumber = 2, Name = "Meeting 2, Race 2", Distance = 1200 },
-                new { RaceCode = 6, MeetCode = 2, RaceNumber = 3, Name = "Meeting 2, Race 3", Distance = 1300 },
-                new { RaceCode = 7, MeetCode = 2, RaceNumber = 4, Name = "Meeting 2, Race 4", Distance = 1000 }
+                new { RaceCode = 1, MeetingMeetCode = 1, RaceNumber = 1, Name = "Meeting 1, Race 1", Distance = 1000 },
+                new { RaceCode = 2, MeetingMeetCode = 1, RaceNumber = 2, Name = "Meeting 1, Race 2", Distance = 1200 },
+                new { RaceCode = 3, MeetingMeetCode = 1, RaceNumber = 3, Name = "Meeting 1, Race 3", Distance = 1300 },
+                new { RaceCode = 4, MeetingMeetCode = 2, RaceNumber = 1, Name = "Meeting 2, Race 1", Distance = 1000 },
+                new { RaceCode = 5, MeetingMeetCode = 2, RaceNumber = 2, Name = "Meeting 2, Race 2", Distance = 1200 },
+                new { RaceCode = 6, MeetingMeetCode = 2, RaceNumber = 3, Name = "Meeting 2, Race 3", Distance = 1300 },
+                new { RaceCode = 7, MeetingMeetCode = 2, RaceNumber = 4, Name = "Meeting 2, Race 4", Distance = 1000 }
             );
         }
     }
