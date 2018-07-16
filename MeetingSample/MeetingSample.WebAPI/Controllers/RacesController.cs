@@ -1,4 +1,7 @@
-﻿using MeetingSample.WebAPI.Models;
+﻿using AutoMapper;
+using MeetingSample.WebAPI.Interface;
+using MeetingSample.WebAPI.Models;
+using MeetingSample.WebAPI.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -12,40 +15,44 @@ namespace MeetingSample.WebAPI.Controllers
     public class RacesController : ControllerBase
     {
         private readonly MeetingSampleWebAPIContext context;
+		private readonly IRaceService raceService;
+		private readonly IMapper mapper;
 
-        public RacesController(MeetingSampleWebAPIContext context)
+		public RacesController(MeetingSampleWebAPIContext context, IRaceService raceService, IMapper mapper)
         {
             this.context = context;
-        }
+			this.raceService = raceService;
+			this.mapper = mapper;
+		}
 
         // GET: api/Races
         [HttpGet]
-        public IEnumerable<Race> GetRaces()
-        {
-            return this.context.Races;
-        }
+		public async Task<IEnumerable<RaceVM>> GetRaces()
+		{
+			return await this.raceService.Get(this.mapper);
+		}
 
-        // GET: api/Races/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetRace([FromRoute] int id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+		// GET: api/Races/5
+		[HttpGet("{id}")]
+		public async Task<IActionResult> GetRace([FromRoute] int id)
+		{
+			if (!ModelState.IsValid)
+			{
+				return BadRequest(ModelState);
+			}
 
-            var race = await this.context.Races.FindAsync(id);
+			var race = await this.raceService.Get(this.mapper, id);
 
-            if (race == null)
-            {
-                return NotFound();
-            }
+			if (race == null)
+			{
+				return NotFound();
+			}
 
-            return Ok(race);
-        }
+			return Ok(race);
+		}
 
-        // PUT: api/Races/5
-        [HttpPut("{id}")]
+		// PUT: api/Races/5
+		[HttpPut("{id}")]
         public async Task<IActionResult> PutRace([FromRoute] int id, [FromBody] Race race)
         {
             if (!ModelState.IsValid)

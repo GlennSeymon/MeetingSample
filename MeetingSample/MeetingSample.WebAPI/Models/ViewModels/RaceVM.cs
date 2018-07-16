@@ -1,7 +1,4 @@
-﻿using System;
-using System.Runtime.Serialization;
-
-namespace MeetingSample.WebAPI.Models.ViewModels
+﻿namespace MeetingSample.WebAPI.Models.ViewModels
 {
 	public class RaceVM
     {
