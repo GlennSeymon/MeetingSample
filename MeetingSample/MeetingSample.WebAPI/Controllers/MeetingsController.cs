@@ -37,16 +37,12 @@ namespace MeetingSample.WebAPI.Controllers
 		public async Task<IActionResult> GetMeeting([FromRoute] int id)
 		{
 			if (!ModelState.IsValid)
-			{
 				return BadRequest(ModelState);
-			}
 
 			var meeting = await this.meetingService.Get(this.mapper, id);
 
 			if (meeting == null)
-			{
 				return NotFound();
-			}
 
 			return Ok(meeting);
 		}
@@ -56,14 +52,10 @@ namespace MeetingSample.WebAPI.Controllers
         public async Task<IActionResult> PutMeeting([FromRoute] int id, [FromBody] Meeting meeting)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
             if (id != meeting.MeetCode)
-            {
                 return BadRequest();
-            }
 
             this.context.Entry(meeting).State = EntityState.Modified;
 
@@ -74,13 +66,9 @@ namespace MeetingSample.WebAPI.Controllers
             catch (DbUpdateConcurrencyException)
             {
                 if (!MeetingExists(id))
-                {
                     return NotFound();
-                }
                 else
-                {
                     throw;
-                }
             }
 
             return NoContent();
@@ -91,9 +79,7 @@ namespace MeetingSample.WebAPI.Controllers
         public async Task<IActionResult> PostMeeting([FromBody] Meeting meeting)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
             this.context.Meetings.Add(meeting);
             await this.context.SaveChangesAsync();
@@ -106,15 +92,11 @@ namespace MeetingSample.WebAPI.Controllers
         public async Task<IActionResult> DeleteMeeting([FromRoute] int id)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
             var meeting = await this.context.Meetings.FindAsync(id);
             if (meeting == null)
-            {
                 return NotFound();
-            }
 
             this.context.Meetings.Remove(meeting);
             await this.context.SaveChangesAsync();

@@ -25,6 +25,7 @@ namespace MeetingSample.WebAPI
         {
 			services.AddTransient<IMeetingService, MeetingService>();
 			services.AddTransient<IRaceService, RaceService>();
+			services.AddTransient<IVenueService, VenueService>();
 
 			services.AddDbContext<MeetingSampleWebAPIContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 			services.AddAutoMapper();

@@ -11,18 +11,18 @@ namespace MeetingSample.WebAPI.Controllers
     [ApiController]
     public class StatesController : ControllerBase
     {
-        private readonly MeetingSampleWebAPIContext _context;
+        private readonly MeetingSampleWebAPIContext context;
 
         public StatesController(MeetingSampleWebAPIContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         // GET: api/States
         [HttpGet]
         public IEnumerable<State> GetStates()
         {
-            return _context.States;
+            return this.context.States;
         }
 
         // GET: api/States/5
@@ -30,16 +30,12 @@ namespace MeetingSample.WebAPI.Controllers
         public async Task<IActionResult> GetState([FromRoute] int id)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            var state = await _context.States.FindAsync(id);
+            var state = await this.context.States.FindAsync(id);
 
             if (state == null)
-            {
                 return NotFound();
-            }
 
             return Ok(state);
         }
@@ -49,30 +45,23 @@ namespace MeetingSample.WebAPI.Controllers
         public async Task<IActionResult> PutState([FromRoute] int id, [FromBody] State state)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
             if (id != state.StateCode)
-            {
 				return BadRequest();
-            }
-			_context.Entry(state).State = EntityState.Modified;
+
+			this.context.Entry(state).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await this.context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
                 if (!StateExists(id))
-                {
                     return NotFound();
-                }
                 else
-                {
                     throw;
-                }
             }
 
             return NoContent();
@@ -83,12 +72,10 @@ namespace MeetingSample.WebAPI.Controllers
         public async Task<IActionResult> PostState([FromBody] State state)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            _context.States.Add(state);
-            await _context.SaveChangesAsync();
+            this.context.States.Add(state);
+            await this.context.SaveChangesAsync();
 
             return CreatedAtAction("GetState", new { id = state.StateCode }, state);
         }
@@ -98,25 +85,21 @@ namespace MeetingSample.WebAPI.Controllers
         public async Task<IActionResult> DeleteState([FromRoute] int id)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            var state = await _context.States.FindAsync(id);
+            var state = await this.context.States.FindAsync(id);
             if (state == null)
-            {
                 return NotFound();
-            }
 
-            _context.States.Remove(state);
-            await _context.SaveChangesAsync();
+            this.context.States.Remove(state);
+            await this.context.SaveChangesAsync();
 
             return Ok(state);
         }
 
         private bool StateExists(int id)
         {
-            return _context.States.Any(e => e.StateCode == id);
+            return this.context.States.Any(e => e.StateCode == id);
         }
     }
 }
