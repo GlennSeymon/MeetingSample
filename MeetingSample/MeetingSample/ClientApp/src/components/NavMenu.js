@@ -25,9 +25,14 @@ export class NavMenu extends Component {
             </LinkContainer>
             <LinkContainer to={'/fetchstate'}>
               <NavItem>
-                <Glyphicon glyph='education' /> Fetch State
+                <Glyphicon glyph='education' /> State
               </NavItem>
-            </LinkContainer>
+			</LinkContainer>
+			<LinkContainer to={'/fetchmeeting'}>
+				<NavItem>
+					<Glyphicon glyph='education' /> Meeting
+				</NavItem>
+			</LinkContainer>
           </Nav>
         </Navbar.Collapse>
       </Navbar>

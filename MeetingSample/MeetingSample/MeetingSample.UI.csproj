@@ -24,12 +24,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\src\components\AddMeeting.js" />
     <None Remove="ClientApp\src\components\AddState.js" />
+    <None Remove="ClientApp\src\components\FetchMeeting.js" />
     <None Remove="ClientApp\src\components\FetchState.js" />
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\src\components\AddMeeting.js" />
     <TypeScriptCompile Include="ClientApp\src\components\AddState.js" />
+    <TypeScriptCompile Include="ClientApp\src\components\FetchMeeting.js" />
     <TypeScriptCompile Include="ClientApp\src\components\FetchState.js" />
   </ItemGroup>
 

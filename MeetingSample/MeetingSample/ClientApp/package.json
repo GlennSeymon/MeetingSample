@@ -4,7 +4,10 @@
   "private": true,
   "proxy": "http://localhost:65486",
   "dependencies": {
+    "@atlaskit/datetime-picker": "^6.0.1",
+    "@atlaskit/field-base": "^11.0.0",
     "bootstrap": "^3.3.7",
+    "proptypes": "^1.1.0",
     "react": "^16.4.1",
     "react-bootstrap": "^0.31.5",
     "react-dom": "^16.4.1",
