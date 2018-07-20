@@ -1,13 +1,14 @@
 ﻿import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
+import Moment from 'react-moment';
 
 export class MeetingData {
 	meetCode: number = 0;
-	meetDate: string;
+	meetDate: Date;
 	title: string = "";
-	stateCode: number = 0;
-	venueCode: number = 0;
+	stateDescLong: number = 0;
+	venueName: number = 0;
 }    
 
 interface FetchMeetingDataState {
@@ -69,10 +70,10 @@ export class FetchMeeting extends Component<RouteComponentProps<{}>, FetchMeetin
                 {meetingList.map(meeting =>
                     <tr key={meeting.meetCode}>
                         <td>{meeting.meetCode}</td>
-						<td>{meeting.meetDate}</td>
+						<td><Moment format="DD/MM/YYYY">{meeting.meetDate}</Moment></td>
 						<td>{meeting.title}</td>
-						<td>{meeting.stateCode}</td>
-						<td>{meeting.venueCode}</td>
+						<td>{meeting.stateDescLong}</td>
+						<td>{meeting.venueName}</td>
                         <td>
                             <a className="action" onClick={(id) => this.handleEdit(meeting.meetCode)}>Edit</a>  |
                             <a className="action" onClick={(id) => this.handleDelete(meeting.meetCode)}>Delete</a>
@@ -91,45 +92,11 @@ export class FetchMeeting extends Component<RouteComponentProps<{}>, FetchMeetin
         return <div>
             <h1>Meeting List</h1>
             <p>
-                <Link to="/addstate">Create New</Link>
+                <Link to="/addmeeting">Create New</Link>
             </p>
             {contents}
         </div>;
     }
 }
 
-export class StateDropDown extends Component {
-
-	constructor() {
-		super();
-		this.state = {
-			options: []
-		}
-	}
-
-	componentDidMount() {
-		this.fetchOptions()
-	}
-
-	fetchOptions() {
-		fetch('api/States/')
-			.then((res) => {
-				return res.json();
-			}).then((json) => {
-				console.log(json);
-				/*
-				values = json;
-				
-				this.setState({ options: values })
-				*/
-			});
-	}
-	render() {
-		return <div className="drop-down">
-			<select>
-				{this.state.options.map((option, key) => <option key={key} >{option}</option>)}
-			</select>
-		</div>;
-	}
-}
 FetchMeeting.displayName = 'FetchMeeting';

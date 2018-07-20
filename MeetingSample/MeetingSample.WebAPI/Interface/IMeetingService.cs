@@ -9,6 +9,8 @@ namespace MeetingSample.WebAPI.Interface
     {
 		Task<MeetingVM> Get(IMapper mapper, int meetCode);
 		Task<IEnumerable<MeetingVM>> Get(IMapper mapper);
+		void Update(IMapper mapper, MeetingVM meetingVM);
+		Task Add(IMapper mapper, MeetingVM meetingVM);
 	}
 }
 

@@ -49,20 +49,18 @@ namespace MeetingSample.WebAPI.Controllers
 
 		// PUT: api/Meetings/5
 		[HttpPut("{id}")]
-        public async Task<IActionResult> PutMeeting([FromRoute] int id, [FromBody] Meeting meeting)
+        public IActionResult PutMeeting([FromRoute] int id, [FromBody] MeetingVM meetingVM)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (id != meeting.MeetCode)
+            if (id != meetingVM.MeetCode)
                 return BadRequest();
-
-            this.context.Entry(meeting).State = EntityState.Modified;
 
             try
             {
-                await this.context.SaveChangesAsync();
-            }
+				this.meetingService.Update(this.mapper, meetingVM);
+			}
             catch (DbUpdateConcurrencyException)
             {
                 if (!MeetingExists(id))
@@ -76,15 +74,14 @@ namespace MeetingSample.WebAPI.Controllers
 
         // POST: api/Meetings
         [HttpPost]
-        public async Task<IActionResult> PostMeeting([FromBody] Meeting meeting)
+        public async Task<IActionResult> PostMeeting([FromBody] MeetingVM meetingVM)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            this.context.Meetings.Add(meeting);
-            await this.context.SaveChangesAsync();
+			await this.meetingService.Add(this.mapper, meetingVM);
 
-            return CreatedAtAction("GetMeeting", new { id = meeting.MeetCode }, meeting);
+            return CreatedAtAction("GetMeeting", new { id = meetingVM.MeetCode }, meetingVM);
         }
 
         // DELETE: api/Meetings/5

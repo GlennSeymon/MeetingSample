@@ -3,6 +3,7 @@ import { RouteComponentProps } from 'react-router';
 import { Label } from '@atlaskit/field-base';
 import { DatePicker } from '@atlaskit/datetime-picker';
 import Select from '@atlaskit/select';
+import FieldText, { FieldTextStateless } from '@atlaskit/field-text';
 
 interface AddMeetingDataState {
     title: string;
@@ -14,6 +15,8 @@ interface AddMeetingDataState {
 	venueCode: number;
 	states: any;
 	venues: any;
+	statesLoaded: boolean;
+	venuesLoaded: boolean;
 }
 
 var meetingCodeParam = 0;
@@ -25,7 +28,7 @@ export class AddMeeting extends Component<RouteComponentProps<{}>, AddMeetingDat
 		meetingCodeParam = this.props.match.params.meetcode; 
 
 		const stateInitial = {
-			title: "", loading: true, meetCode: meetingCodeParam, meetDate: "", meetTitle: "", stateCode: 0, venueCode: 0
+			title: "", loading: true, meetCode: meetingCodeParam, meetDate: "", meetTitle: "", stateCode: 0, venueCode: 0, statesLoaded: false, venuesLoaded: false
 		}
 
 		this.state = stateInitial;
@@ -44,6 +47,8 @@ export class AddMeeting extends Component<RouteComponentProps<{}>, AddMeetingDat
 		this.handleCancel = this.handleCancel.bind(this);
 		this.handleChange = this.handleChange.bind(this);
 		this.handleChangeDatePicker = this.handleChangeDatePicker.bind(this);
+		this.handleChangeState = this.handleChangeState.bind(this);
+		this.handleChangeVenue = this.handleChangeVenue.bind(this);
 	}
 
 	componentDidMount() {
@@ -60,7 +65,7 @@ export class AddMeeting extends Component<RouteComponentProps<{}>, AddMeetingDat
 				for (let state of states)
 					stateArr.push({ "value": state.stateCode, "label": state.descLong });
 
-				this.setState({ states: stateArr })
+				this.setState({ states: stateArr, statesLoaded: true });
 			});
 	}
 
@@ -73,18 +78,16 @@ export class AddMeeting extends Component<RouteComponentProps<{}>, AddMeetingDat
 				for (let venue of venues)
 					venueArr.push({ "value": venue.venueCode, "label": venue.name });
 
-				this.setState({ venues: venueArr })
+				this.setState({ venues: venueArr, venuesLoaded: true });
 			});
 	}
 
-    render() {
-        let contents = this.state.loading
-            ? <p><em>Loading...</em></p>
-            : this.renderCreateForm();
+	render() {
+		let contents = (this.state.loading || !this.state.statesLoaded || !this.state.venuesLoaded) ? <p><em>Loading...</em></p> : this.renderCreateForm();
 
 		return <div>
 			<h1>{this.state.title}</h1>
-            <h3>Meeting</h3>
+			<h3>Meeting</h3>
             <hr />
             {contents}
         </div>;
@@ -92,11 +95,7 @@ export class AddMeeting extends Component<RouteComponentProps<{}>, AddMeetingDat
 
 	handleChangeDatePicker = (value: string) => {
 		this.recentlySelected = true;
-		this.setState(
-			{
-				meetDate: value,
-				isOpen: false,
-			},
+		this.setState({meetDate: value, isOpen: false, },
 			() => {
 				setTimeout(() => {
 					this.recentlySelected = false;
@@ -115,21 +114,36 @@ export class AddMeeting extends Component<RouteComponentProps<{}>, AddMeetingDat
 		});
 	}
 
+	handleChangeState(event) {
+		this.setState({ stateCode: event.value});
+	}
+
+	handleChangeVenue(event) {
+		this.setState({ venueCode: event.value });
+	}
+
 	handleSave(event) {
 		event.preventDefault();
 
 		const data = {
-			"meetCode": meetingCodeParam,
-			"meetDate": this.state.meetDate,
-			"meetTitle": this.state.title,
-			"stateCode": this.state.stateCode,
-			"venueCode": this.state.venueCode
+			"MeetCode": meetingCodeParam,
+			"MeetDate": this.state.meetDate,
+			"Title": this.state.meetTitle,
+			"StateCode": this.state.stateCode,
+			"VenueCode": this.state.venueCode
 		}
+
+		console.log("data");
+		console.log(data);
 
 		if (meetingCodeParam) {
 			fetch('api/Meetings/' + meetingCodeParam, {
 				method: 'PUT',
-				body: data
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(data)
             }).then((responseJson) => {
                     this.props.history.push("/fetchmeeting");
                 })
@@ -163,25 +177,25 @@ export class AddMeeting extends Component<RouteComponentProps<{}>, AddMeetingDat
                 <div className="form-group row" >
                     <label className=" control-label col-md-12" htmlFor="meetDate">Meeting Date</label>
 					<div className="col-md-4">
-						<DatePicker id="meetDate" value={this.state.meetDate} onChange={this.handleChangeDatePicker} />
+						<DatePicker id="meetDate" defaultValue={this.state.meetDate} onChange={this.handleChangeDatePicker} />
                     </div>
                 </div >
                 <div className="form-group row" >
-                    <label className=" control-label col-md-12" htmlFor="title">Meeting Title</label>
+                    <label className=" control-label col-md-12" htmlFor="meetTitle">Meeting Title</label>
 					<div className="col-md-4">
-						<input className="form-control" type="text" name="title" value={this.state.meetTitle} onChange={this.handleChange} required />
+						<input className="form-control" type="text" name="meetTitle" value={this.state.meetTitle} onChange={this.handleChange} required />
                     </div>
 				</div >
 				<div className="form-group row" >
 					<label className=" control-label col-md-12" htmlFor="stateCode">State</label>
 					<div className="col-md-4">
-						<Select className="single-select" classNamePrefix="react-select" name="stateCode" defaultValue={this.state.stateCode} options={this.state.states} placeholder="Choose a State" />
+						<Select className="single-select" classNamePrefix="react-select" name="stateCode" options={this.state.states} defaultValue={this.state.states[this.state.stateCode - 1]} onChange={this.handleChangeState} placeholder="Choose a State" />
 					</div>
 				</div >
 				<div className="form-group row" >
 					<label className=" control-label col-md-12" htmlFor="venueCode">Venue</label>
 					<div className="col-md-4">
-						<Select className="single-select" classNamePrefix="react-select" name="venueCode" defaultValue={this.state.venueCode} options={this.state.venues} placeholder="Choose a Venue" />
+						<Select className="single-select" classNamePrefix="react-select" name="venueCode" options={this.state.venues} defaultValue={this.state.venues[this.state.venueCode - 1]} onChange={this.handleChangeVenue} placeholder="Choose a Venue" />
 					</div>
 				</div >
                 <div className="form-group">
@@ -191,4 +205,4 @@ export class AddMeeting extends Component<RouteComponentProps<{}>, AddMeetingDat
             </form >
         )
     }
-}  
+}
