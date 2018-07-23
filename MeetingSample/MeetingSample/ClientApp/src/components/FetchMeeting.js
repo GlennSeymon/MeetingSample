@@ -7,8 +7,8 @@ export class MeetingData {
 	meetCode: number = 0;
 	meetDate: Date;
 	title: string = "";
-	stateDescLong: number = 0;
-	venueName: number = 0;
+	stateDescLong: string = "";
+	venueName: string = "";
 }    
 
 interface FetchMeetingDataState {
@@ -85,9 +85,7 @@ export class FetchMeeting extends Component<RouteComponentProps<{}>, FetchMeetin
     }
 
     render() {
-        let contents = this.state.loading
-            ? <p><em>Loading...</em></p>
-            : this.renderMeetingTable(this.state.meetingList);
+        let contents = this.state.loading ? <p><em>Loading...</em></p> : this.renderMeetingTable(this.state.meetingList);
 
         return <div>
             <h1>Meeting List</h1>

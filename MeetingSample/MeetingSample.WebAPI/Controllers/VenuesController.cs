@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MeetingSample.WebAPI.Interface;
 using MeetingSample.WebAPI.Models;
+using MeetingSample.WebAPI.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -17,17 +18,19 @@ namespace MeetingSample.WebAPI.Controllers
 		private readonly IVenueService venueService;
 		private readonly IMapper mapper;
 
-		public VenuesController(MeetingSampleWebAPIContext context)
+		public VenuesController(MeetingSampleWebAPIContext context, IVenueService venueService, IMapper mapper)
         {
             this.context = context;
+			this.venueService = venueService;
+			this.mapper = mapper;
         }
 
         // GET: api/Venues
         [HttpGet]
-        public IEnumerable<Venue> GetVenues()
+        public async Task<IEnumerable<VenueVM>> GetVenues()
         {
-            return this.context.Venues;
-        }
+			return await this.venueService.Get(this.mapper);
+		}
 
         // GET: api/Venues/5
         [HttpGet("{id}")]
@@ -36,9 +39,9 @@ namespace MeetingSample.WebAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var venue = await this.context.Venues.FindAsync(id);
+			var venue = await this.venueService.Get(this.mapper, id);
 
-            if (venue == null)
+			if (venue == null)
                 return NotFound();
 
             return Ok(venue);
@@ -46,42 +49,39 @@ namespace MeetingSample.WebAPI.Controllers
 
         // PUT: api/Venues/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutVenue([FromRoute] int id, [FromBody] Venue venue)
+		public IActionResult PutVenue([FromRoute] int id, [FromBody] VenueVM venueVM)
+		{
+			if (!ModelState.IsValid)
+				return BadRequest(ModelState);
+
+			if (id != venueVM.VenueCode)
+				return BadRequest();
+
+			try
+			{
+				this.venueService.Update(this.mapper, venueVM);
+			}
+			catch (DbUpdateConcurrencyException)
+			{
+				if (!VenueExists(id))
+					return NotFound();
+				else
+					throw;
+			}
+
+			return NoContent();
+		}
+
+		// POST: api/Venues
+		[HttpPost]
+        public async Task<IActionResult> PostVenue([FromBody] VenueVM venue)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (id != venue.VenueCode)
-                return BadRequest();
+			await this.venueService.Add(this.mapper, venue);
 
-            this.context.Entry(venue).State = EntityState.Modified;
-
-            try
-            {
-                await this.context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!VenueExists(id))
-                    return NotFound();
-                else
-                    throw;
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Venues
-        [HttpPost]
-        public async Task<IActionResult> PostVenue([FromBody] Venue venue)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            this.context.Venues.Add(venue);
-            await this.context.SaveChangesAsync();
-
-            return CreatedAtAction("GetVenue", new { id = venue.VenueCode }, venue);
+			return CreatedAtAction("GetVenue", new { id = venue.VenueCode }, venue);
         }
 
         // DELETE: api/Venues/5
