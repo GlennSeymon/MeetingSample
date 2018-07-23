@@ -133,9 +133,6 @@ export class AddMeeting extends Component<RouteComponentProps<{}>, AddMeetingDat
 			"VenueCode": this.state.venueCode
 		}
 
-		console.log("data");
-		console.log(data);
-
 		if (meetingCodeParam) {
 			fetch('api/Meetings/' + meetingCodeParam, {
 				method: 'PUT',

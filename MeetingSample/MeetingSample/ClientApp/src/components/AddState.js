@@ -73,7 +73,11 @@ export class AddState extends Component<RouteComponentProps<{}>, AddStateDataSta
 		if (stateCodeParam) {
 			fetch('api/States/' + stateCodeParam, {
 				method: 'PUT',
-				body: data
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(data)
             }).then((responseJson) => {
                     this.props.history.push("/fetchstate");
                 })
